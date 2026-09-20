@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#111515" />
+<title>FLOWSHIELD-ID — Market Forensics & Structural Resilience System</title>
+<meta name="description" content="Prototype konseptual FLOWSHIELD-ID: merekonstruksi DNA kejadian pasar: structural outflow, hype, liquidity, index mechanics, foreign flow, dan unexplained residual." />
+<style>
+:root{
+  --paper:#ECEBE6;
+  --paper-2:#E4E3DE;
+  --ink:#111515;
+  --ink-2:#1C2324;
+  --muted:#687271;
+  --line:#C7C8C2;
+  --line-2:#A9AEAA;
+  --steel:#7F8D8B;
+  --teal:#173E43;
+  --teal-2:#2B5B60;
+  --red:#B94E3E;
+  --sand:#B9A36B;
+  --green:#526E61;
+  --white:#F8F7F2;
+  --max:1540px;
+  --ease:cubic-bezier(.2,.82,.2,1);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--paper)}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden;cursor:none}
+button,a,input{font:inherit}button,a{cursor:none}button{color:inherit}
+::selection{background:var(--ink);color:var(--paper)}
+
+/* texture */
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:10000;opacity:.045;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.95' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.4'/%3E%3C/svg%3E")}
+
+/* cursor */
+.cursor-dot,.cursor-ring{position:fixed;z-index:9998;pointer-events:none;transform:translate(-50%,-50%);border-radius:50%}
+.cursor-dot{width:7px;height:7px;background:var(--ink);transition:width .25s var(--ease),height .25s var(--ease),background .25s}
+.cursor-ring{width:34px;height:34px;border:1px solid rgba(17,21,21,.28);transition:width .28s var(--ease),height .28s var(--ease),border-color .28s}
+body.is-hover .cursor-dot{width:5px;height:5px;background:var(--red)}
+body.is-hover .cursor-ring{width:58px;height:58px;border-color:rgba(185,78,62,.5)}
+
+/* intro */
+#intro{position:relative;min-height:100vh;z-index:20;background:var(--ink);color:var(--paper);display:grid;grid-template-columns:1.1fr .9fr;overflow:hidden}
+#intro.leave{transform:none}
+#intro:after{content:'';position:absolute;left:0;right:0;bottom:0;height:1px;background:#344040}
+.intro-left,.intro-right{padding:42px 50px;position:relative;display:flex;flex-direction:column;justify-content:space-between}
+.intro-left{border-right:1px solid #344040}
+.intro-top{display:flex;justify-content:space-between;gap:24px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#91A09D}
+.intro-title{font-size:clamp(74px,9.7vw,170px);line-height:.74;letter-spacing:-.078em;font-weight:620;margin:0;max-width:1000px}
+.intro-title em{display:block;font-family:Georgia,serif;font-weight:400;color:#A8C0BD;margin-left:9vw}
+.intro-sub{max-width:620px;font-size:15px;line-height:1.72;color:#C6D0CD;margin:28px 0 0}
+.enter-row{display:flex;justify-content:space-between;align-items:flex-end;gap:30px}
+.enter-btn{border:0;background:transparent;padding:0;display:flex;align-items:center;gap:18px;color:var(--paper);font-size:15px}
+.enter-circle{width:78px;height:78px;border:1px solid #7E8C89;border-radius:50%;display:grid;place-items:center;transition:.35s var(--ease)}
+.enter-circle svg{width:22px;transition:.35s var(--ease)}
+.enter-btn:hover .enter-circle{background:var(--paper);color:var(--ink);transform:rotate(45deg)}
+.intro-note{font-size:10px;line-height:1.55;color:#778582;max-width:300px;text-align:right}
+.intro-right{overflow:hidden}
+.intro-index{font-size:clamp(210px,26vw,500px);line-height:.65;font-weight:600;letter-spacing:-.12em;color:transparent;-webkit-text-stroke:1px #4C5B58;position:absolute;left:-12px;top:51%;transform:translateY(-50%);user-select:none}
+.intro-right-bottom{display:flex;justify-content:space-between;align-items:flex-end;z-index:2;color:#91A09D;font-size:10px;text-transform:uppercase;letter-spacing:.15em}
+
+
+.intro-incident{display:flex;gap:14px;align-items:center;margin-bottom:22px;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:#93A29F}.intro-incident span:first-child{color:#E7ECE9}.intro-incident span+span{border-left:1px solid #485653;padding-left:14px}.intro-sequence{margin-top:30px;display:flex;flex-wrap:wrap;gap:10px 18px;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#7E8D89}.intro-sequence span{padding-bottom:5px;border-bottom:1px solid #3B4946}#introField{position:absolute;inset:0;width:100%;height:100%;opacity:.62}
+
+/* fixed chrome */
+.topbar{position:fixed;top:0;left:0;right:0;height:68px;z-index:200;background:rgba(236,235,230,.88);backdrop-filter:blur(18px);border-bottom:1px solid rgba(199,200,194,.88)}
+.top-inner{height:100%;width:min(var(--max),calc(100% - 64px));margin:auto;display:grid;grid-template-columns:1fr auto 1fr;align-items:center}
+.brand{font-size:17px;font-weight:710;letter-spacing:-.035em}.brand span{color:var(--teal)}
+.live-badge{display:flex;align-items:center;gap:9px;border:1px solid var(--line-2);padding:7px 10px;border-radius:99px;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--sand);box-shadow:0 0 0 4px rgba(185,163,107,.12)}
+.top-meta{text-align:right;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.side-nav{position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:190;display:flex;flex-direction:column;gap:8px}
+.side-nav a{width:7px;height:7px;border:1px solid var(--line-2);border-radius:50%;display:block;transition:.25s}.side-nav a.on{background:var(--ink);border-color:var(--ink);transform:scale(1.35)}
+
+.presentation-btn{border:0;background:transparent;padding:7px 0;color:var(--muted);font-size:9px;letter-spacing:.14em;text-transform:uppercase;border-bottom:1px solid transparent}.presentation-btn:hover{color:var(--ink);border-color:var(--ink)}
+
+/* global */
+.wrap{width:min(var(--max),calc(100% - 64px));margin:auto}
+section{position:relative;min-height:100vh;padding:116px 0 82px;border-bottom:1px solid var(--line)}
+.section-head{display:grid;grid-template-columns:110px minmax(0,1fr) 330px;gap:28px;align-items:start;margin-bottom:68px}
+.section-no{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);padding-top:8px}
+.section-title{font-size:clamp(48px,6.2vw,102px);line-height:.86;letter-spacing:-.062em;font-weight:610;margin:0;max-width:1050px}
+.section-title em{font-family:Georgia,serif;font-weight:400;color:var(--teal)}
+.section-note{font-size:13px;line-height:1.72;color:#52605F;margin:4px 0 0;max-width:320px}
+.micro{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.rule{height:1px;background:var(--line)}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .75s var(--ease),transform .75s var(--ease)}.reveal.in{opacity:1;transform:none}
+
+/* HERO */
+#home{padding-top:142px;overflow:hidden}
+.hero{display:grid;grid-template-columns:1.18fr .82fr;gap:78px;align-items:end;min-height:calc(100vh - 210px)}
+.hero-kicker{font-size:10px;letter-spacing:.17em;text-transform:uppercase;color:var(--muted);display:flex;gap:16px;align-items:center;margin-bottom:24px}.hero-kicker:before{content:"";width:44px;height:1px;background:var(--teal)}
+.hero-title{font-size:clamp(80px,11.5vw,190px);line-height:.69;letter-spacing:-.085em;font-weight:620;margin:0}
+.hero-title .trace{display:block;color:var(--teal);margin-left:13vw}.hero-title .small{font-family:Georgia,serif;font-weight:400;font-size:.64em;color:#556362;margin-left:4vw}
+.hero-copy{margin-top:54px;border-top:1px solid var(--line-2);padding-top:21px;display:grid;grid-template-columns:1fr 1fr;gap:48px;max-width:840px}
+.hero-copy p{margin:0;font-size:14px;line-height:1.72;color:#495655}.hero-copy p:first-child{font-size:22px;line-height:1.35;color:var(--ink);letter-spacing:-.025em}
+.hero-field{height:72vh;min-height:575px;position:relative;border-left:1px solid var(--line);border-right:1px solid var(--line);overflow:hidden;background:#E8E7E1}
+.hero-field canvas{position:absolute;inset:0;width:100%;height:100%}
+.field-top,.field-bottom{position:absolute;left:18px;right:18px;z-index:2;display:flex;justify-content:space-between;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}.field-top{top:18px}.field-bottom{bottom:18px;border-top:1px solid rgba(17,21,21,.2);padding-top:10px}
+.hero-pulse{position:absolute;right:18px;top:52px;width:9px;height:9px;background:var(--red);border-radius:50%;box-shadow:0 0 0 0 rgba(185,78,62,.3);animation:pulse 1.8s infinite}@keyframes pulse{70%{box-shadow:0 0 0 18px rgba(185,78,62,0)}100%{box-shadow:0 0 0 0 rgba(185,78,62,0)}}
+
+/* GAP */
+.gap-grid{display:grid;grid-template-columns:.72fr 1.28fr;gap:72px;align-items:start}
+.gap-thesis{border-top:1px solid var(--ink);padding-top:26px;position:sticky;top:100px}
+.gap-thesis blockquote{margin:0;font-family:Georgia,serif;font-size:clamp(34px,4.1vw,66px);line-height:1.18;letter-spacing:-.035em;color:#20302F}.gap-thesis blockquote strong{font-family:Inter,sans-serif;color:var(--teal);font-weight:620}
+.gap-thesis p{font-size:12px;line-height:1.7;color:var(--muted);max-width:430px;margin:28px 0 0}
+.layer-list{border-top:1px solid var(--ink)}
+.layer{display:grid;grid-template-columns:110px 1fr 150px;gap:24px;padding:26px 0;border-bottom:1px solid var(--line);align-items:start;transition:.3s var(--ease)}
+.layer:hover{padding-left:12px;background:rgba(248,247,242,.6)}
+.layer .id{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}.layer h3{margin:0 0 7px;font-size:21px;letter-spacing:-.025em;font-weight:590}.layer p{margin:0;font-size:12px;line-height:1.62;color:var(--muted);max-width:650px}.layer .state{text-align:right;font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.layer.missing{background:var(--ink);color:var(--paper);margin:22px 0;border:0;padding:28px}.layer.missing p,.layer.missing .id,.layer.missing .state{color:#9EAEAA}.layer.missing h3{color:#F4F2EA}.layer.missing:hover{padding-left:40px}
+
+
+/* HYPEPRINT */
+#hypeprint{background:#E8E6E0}.hype-shell{display:grid;grid-template-columns:1.15fr .85fr;border-top:1px solid var(--line-2);border-bottom:1px solid var(--line-2);min-height:680px}.hype-network{position:relative;min-height:680px;border-right:1px solid var(--line-2);overflow:hidden}.hype-network canvas{position:absolute;inset:0;width:100%;height:100%}.hype-caption{position:absolute;left:18px;right:18px;bottom:16px;display:flex;justify-content:space-between;gap:20px;font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}.hype-panel{padding:26px 0 0 28px;display:flex;flex-direction:column}.hype-score{border-bottom:1px solid var(--line);padding-bottom:22px}.hype-score span{display:block;font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}.hype-score b{font-size:88px;line-height:.92;letter-spacing:-.07em;font-weight:580;display:inline-block;margin:10px 8px 0 0}.hype-score small{font-size:9px;color:var(--muted)}.hype-metrics{margin-top:8px}.hype-metric{width:100%;border:0;border-bottom:1px solid var(--line);background:transparent;display:grid;grid-template-columns:28px 1fr auto;gap:12px;text-align:left;align-items:center;padding:16px 4px}.hype-metric span{font-size:8px;color:var(--muted)}.hype-metric b{font-size:12px;font-weight:600}.hype-metric small{display:block;font-size:8px;color:var(--muted);margin-top:3px}.hype-metric strong{font-family:Georgia,serif;font-size:25px;font-weight:400;color:var(--teal)}.hype-metric.active{padding-left:13px;background:#DFDDD6}.hype-readout{margin-top:auto;padding:22px 0 24px}.hype-readout p{font-family:Georgia,serif;font-size:22px;line-height:1.37;margin:10px 0 18px;max-width:520px}.review-tag{display:inline-block;border:1px solid #B98A80;color:#9C483B;padding:7px 8px;font-size:7px;letter-spacing:.1em}.trap-flow{margin-top:44px;display:grid;grid-template-columns:150px repeat(11,auto);align-items:center;gap:12px;padding:18px 0;border-top:1px solid var(--line-2);border-bottom:1px solid var(--line-2);overflow-x:auto}.trap-label{font-size:8px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}.trap-step{min-width:122px}.trap-step span{display:block;font-size:8px;color:var(--muted)}.trap-step b{display:block;font-size:11px;margin:5px 0}.trap-step small{font-size:8px;color:var(--muted)}.trap-step.hot b{color:var(--red)}.trap-flow>i{font-style:normal;color:var(--line-2)}
+
+/* TRACE ENGINE */
+.trace-shell{border-top:1px solid var(--ink);display:grid;grid-template-columns:290px minmax(0,1fr);min-height:710px}
+.event-rail{border-right:1px solid var(--line);padding:24px 24px 24px 0}
+.event-rail-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}.rail-filter{font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted)}
+.event-btn{width:100%;background:transparent;border:0;border-bottom:1px solid var(--line);text-align:left;padding:17px 0;display:grid;grid-template-columns:35px 1fr auto;gap:11px;align-items:center;color:var(--muted);transition:.25s}
+.event-btn.active{color:var(--ink)}.event-btn:hover{padding-left:8px}.event-btn .e-no{font-size:9px;letter-spacing:.1em}.event-btn strong{font-size:12px;font-weight:570;line-height:1.35}.event-btn small{font-size:8px;text-transform:uppercase;letter-spacing:.12em}
+.trace-main{padding:24px 0 0 34px;display:grid;grid-template-rows:auto 1fr auto;min-width:0}
+.trace-head{display:flex;justify-content:space-between;gap:30px;align-items:flex-start;border-bottom:1px solid var(--line);padding-bottom:20px}.trace-head h3{font-size:clamp(34px,4.1vw,66px);letter-spacing:-.05em;line-height:.92;margin:0;font-weight:610;max-width:800px}.trace-confidence{text-align:right}.trace-confidence b{display:block;font-size:30px;font-weight:620;letter-spacing:-.04em}.trace-confidence span{font-size:8px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.dna-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:38px;padding:30px 0}
+.dna-chart{position:relative;min-height:390px;border-right:1px solid var(--line);padding-right:34px}.dna-bars{display:grid;gap:19px;margin-top:18px}.dna-row{display:grid;grid-template-columns:150px 1fr 46px;gap:14px;align-items:center}.dna-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}.dna-track{height:6px;background:#D9D9D3;position:relative;overflow:hidden}.dna-fill{height:100%;background:var(--ink);width:0;transition:width .75s var(--ease)}.dna-row:nth-child(2) .dna-fill{background:var(--teal)}.dna-row:nth-child(3) .dna-fill{background:var(--sand)}.dna-row:nth-child(4) .dna-fill{background:var(--steel)}.dna-row:nth-child(5) .dna-fill{background:var(--red)}.dna-row:nth-child(6) .dna-fill{background:#5A6866}.dna-value{font-size:11px;text-align:right}
+.event-story{display:flex;flex-direction:column;justify-content:space-between}.story-copy{font-family:Georgia,serif;font-size:clamp(25px,2.5vw,39px);line-height:1.25;letter-spacing:-.025em;color:#263534;margin:0}.story-copy strong{font-family:Inter,sans-serif;color:var(--teal);font-weight:620}.evidence-legend{border-top:1px solid var(--line);padding-top:18px;display:grid;gap:9px}.evidence-line{display:grid;grid-template-columns:10px 92px 1fr;gap:10px;font-size:9px;line-height:1.45;color:var(--muted)}.evidence-dot{width:7px;height:7px;border-radius:50%;margin-top:2px}.obs{background:var(--green)}.inf{background:var(--sand)}.sim{background:var(--red)}
+.trace-footer{border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr)}.trace-stat{padding:18px;border-right:1px solid var(--line)}.trace-stat:first-child{padding-left:0}.trace-stat:last-child{border-right:0}.trace-stat span{display:block;font-size:8px;text-transform:uppercase;letter-spacing:.13em;color:var(--muted);margin-bottom:7px}.trace-stat b{font-size:15px;font-weight:590}
+
+/* CAUSAL GRAPH */
+.causal-layout{display:grid;grid-template-columns:1.22fr .78fr;gap:60px;align-items:stretch}
+.causal-stage{min-height:620px;position:relative;border:1px solid var(--line-2);background:#E7E6E0;overflow:hidden}
+.causal-stage svg{position:absolute;inset:0;width:100%;height:100%}.c-edge{stroke:#7C8986;stroke-width:1;fill:none;opacity:.65;stroke-dasharray:5 5;animation:dash 8s linear infinite}@keyframes dash{to{stroke-dashoffset:-80}}
+.c-node{position:absolute;transform:translate(-50%,-50%);width:150px;height:150px;border-radius:50%;border:1px solid var(--line-2);background:rgba(236,235,230,.94);display:grid;place-items:center;text-align:center;padding:20px;transition:.3s var(--ease);z-index:3}.c-node:hover,.c-node.active{transform:translate(-50%,-50%) scale(1.08);border-color:var(--ink);background:var(--white)}.c-node .n{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}.c-node b{font-size:14px;line-height:1.25}.c-node.red{border-color:#B68279}.c-node.teal{border-color:#759295}
+.causal-panel{border-top:1px solid var(--ink);padding-top:24px;display:flex;flex-direction:column;justify-content:space-between}.causal-panel h3{margin:0 0 14px;font-size:19px}.causal-panel p{font-size:12px;line-height:1.7;color:var(--muted);margin:0}.causal-insight{font-family:Georgia,serif;font-size:clamp(31px,3.4vw,52px);line-height:1.18;letter-spacing:-.03em;margin:42px 0;color:#223231}.causal-insight strong{font-family:Inter,sans-serif;color:var(--red);font-weight:610}.causal-meta{border-top:1px solid var(--line);padding-top:18px}.meta-row{display:flex;justify-content:space-between;gap:20px;padding:10px 0;border-bottom:1px solid var(--line);font-size:10px}.meta-row span{color:var(--muted)}
+
+/* COUNTERFACTUAL */
+.counter-wrap{border-top:1px solid var(--ink);padding-top:28px}
+.counter-top{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:end;margin-bottom:28px}.counter-top h3{font-size:clamp(28px,3.8vw,58px);letter-spacing:-.045em;margin:0;font-weight:610;max-width:920px}.counter-top p{max-width:390px;font-size:11px;line-height:1.65;color:var(--muted);margin:0}
+.twin-stage{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line-2);min-height:520px;position:relative;overflow:hidden}.twin-half{position:relative;padding:24px}.twin-half:first-child{border-right:1px solid var(--line-2)}.twin-head{display:flex;justify-content:space-between;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted)}.twin-big{position:absolute;bottom:24px;left:24px;font-size:clamp(64px,8vw,120px);line-height:.75;letter-spacing:-.07em;font-weight:620}.twin-big small{display:block;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:14px}.twin-canvas{position:absolute;left:20px;right:20px;top:70px;height:290px}.twin-canvas svg{width:100%;height:100%;overflow:visible}.twin-note{position:absolute;right:24px;bottom:28px;width:220px;font-size:10px;line-height:1.6;color:var(--muted);text-align:right}
+.counter-control{display:grid;grid-template-columns:180px 1fr 100px;gap:18px;align-items:center;margin-top:22px}.counter-control label,.counter-control output{font-size:9px;text-transform:uppercase;letter-spacing:.13em;color:var(--muted)}.counter-control output{text-align:right;color:var(--ink)}
+input[type=range]{appearance:none;width:100%;background:transparent}input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--line-2)}input[type=range]::-webkit-slider-thumb{appearance:none;width:18px;height:18px;border-radius:50%;background:var(--ink);margin-top:-8px;border:4px solid var(--paper)}
+
+/* RESIDUAL */
+.residual-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:70px;align-items:center}
+.residual-ring{width:min(520px,88vw);aspect-ratio:1;border-radius:50%;border:1px solid var(--line-2);position:relative;display:grid;place-items:center;margin:auto}.residual-ring:before,.residual-ring:after{content:"";position:absolute;border-radius:50%;border:1px solid var(--line)}.residual-ring:before{inset:13%}.residual-ring:after{inset:28%}.residual-core{text-align:center;z-index:2}.residual-core b{display:block;font-size:clamp(92px,11vw,170px);line-height:.72;letter-spacing:-.08em;font-weight:620}.residual-core span{display:block;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-top:16px}.residual-orbit{position:absolute;inset:0;animation:spin 18s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.residual-orbit i{position:absolute;left:50%;top:-5px;width:11px;height:11px;border-radius:50%;background:var(--red);transform:translateX(-50%)}
+.residual-copy h3{font-size:clamp(38px,4.6vw,72px);line-height:.95;letter-spacing:-.05em;margin:0 0 32px;font-weight:610}.residual-copy h3 em{font-family:Georgia,serif;font-weight:400;color:var(--teal)}.residual-copy>p{font-size:14px;line-height:1.72;color:#4E5C5A;max-width:620px;margin:0 0 32px}.residual-list{border-top:1px solid var(--ink)}.residual-row{display:grid;grid-template-columns:54px 1fr;gap:20px;padding:17px 0;border-bottom:1px solid var(--line)}.residual-row b{font-size:10px;color:var(--muted);font-weight:500}.residual-row strong{font-size:13px;font-weight:580;display:block;margin-bottom:5px}.residual-row p{font-size:11px;line-height:1.55;color:var(--muted);margin:0}
+
+/* CONTAGION */
+.contagion-layout{display:grid;grid-template-columns:1fr 330px;gap:42px}
+.contagion-stage{height:650px;border:1px solid var(--line-2);position:relative;overflow:hidden;background:#E8E7E1}.contagion-stage canvas{position:absolute;inset:0;width:100%;height:100%}.contagion-caption{position:absolute;left:18px;bottom:16px;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);z-index:2}.contagion-controls{border-top:1px solid var(--ink);padding-top:22px;display:flex;flex-direction:column}.shock-buttons{display:grid;gap:0;border-top:1px solid var(--line)}.shock-btn{border:0;border-bottom:1px solid var(--line);background:transparent;text-align:left;padding:15px 0;display:flex;justify-content:space-between;gap:16px;color:var(--muted);font-size:11px}.shock-btn.active{color:var(--ink);font-weight:600}.shock-btn span:last-child{font-size:9px;text-transform:uppercase;letter-spacing:.1em}.shock-insight{margin-top:auto;border-top:1px solid var(--ink);padding-top:18px}.shock-insight p{font-family:Georgia,serif;font-size:26px;line-height:1.25;letter-spacing:-.02em;color:#2A3937;margin:0}.shock-insight p strong{font-family:Inter,sans-serif;color:var(--teal);font-weight:620}
+
+/* POLICY SANDBOX */
+.policy-shell{display:grid;grid-template-columns:320px 1fr;gap:52px;border-top:1px solid var(--ink);padding-top:25px}.policy-controls h3{font-size:17px;margin:0 0 8px}.policy-controls>p{font-size:11px;line-height:1.6;color:var(--muted);margin:0 0 25px}.lever-btn{width:100%;border:0;border-bottom:1px solid var(--line);background:transparent;padding:15px 0;text-align:left;display:grid;grid-template-columns:28px 1fr auto;gap:12px;align-items:center;color:var(--muted)}.lever-btn.active{color:var(--ink)}.lever-btn span:first-child{font-size:9px}.lever-btn strong{font-size:11px;font-weight:590}.lever-btn small{font-size:8px;text-transform:uppercase;letter-spacing:.1em}.policy-output{display:grid;grid-template-columns:1fr .82fr;gap:42px;min-width:0}.policy-score{border-right:1px solid var(--line);padding-right:34px}.policy-number{font-size:clamp(120px,15vw,230px);line-height:.72;letter-spacing:-.085em;font-weight:620}.policy-number sup{font-size:16px;color:var(--teal);letter-spacing:0;margin-left:6px;vertical-align:top}.policy-word{font-family:Georgia,serif;font-size:clamp(40px,5vw,76px);line-height:1;color:var(--teal);margin:30px 0 34px}.policy-rows{border-top:1px solid var(--line)}.policy-row{display:flex;justify-content:space-between;gap:20px;padding:13px 0;border-bottom:1px solid var(--line);font-size:10px}.policy-row span{color:var(--muted)}.policy-row b{font-weight:590}.tradeoffs h4{font-size:10px;text-transform:uppercase;letter-spacing:.13em;margin:0 0 17px;color:var(--muted)}.tradeoff{padding:16px 0;border-bottom:1px solid var(--line)}.tradeoff strong{font-size:12px;display:block;margin-bottom:6px}.tradeoff p{font-size:10px;line-height:1.55;color:var(--muted);margin:0}.prototype-warning{margin-top:22px;border-left:2px solid var(--sand);padding-left:12px;font-size:9px;line-height:1.55;color:var(--muted)}
+
+/* TERMINAL */
+#terminal{background:var(--ink);color:var(--paper);border-bottom:0}
+#terminal .section-no,#terminal .section-note{color:#8B9996}#terminal .section-title em{color:#A6C2BE}
+.term-shell{border:1px solid #3B4645;display:grid;grid-template-columns:290px 1fr;min-height:690px;background:#131818}.term-rail{border-right:1px solid #34403E;padding:18px}.term-search{height:38px;border:1px solid #3B4846;color:#B9C4C1;display:flex;align-items:center;padding:0 12px;font-size:10px;margin-bottom:14px}.term-event{padding:14px 0;border-bottom:1px solid #2E3937}.term-event-top{display:flex;justify-content:space-between;font-size:8px;text-transform:uppercase;letter-spacing:.12em;color:#75837F}.term-event strong{font-size:11px;display:block;margin:6px 0;color:#E7EBE8;font-weight:560}.term-event p{font-size:9px;line-height:1.5;color:#81908C;margin:0}.term-main{padding:20px 24px}.term-top{display:flex;justify-content:space-between;gap:20px;border-bottom:1px solid #35403F;padding-bottom:18px}.term-title h3{font-size:33px;letter-spacing:-.04em;margin:0 0 6px;font-weight:600}.term-title p{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:#80908C;margin:0}.term-score{text-align:right}.term-score b{font-size:40px;line-height:.8;font-weight:610}.term-score span{display:block;font-size:8px;text-transform:uppercase;letter-spacing:.12em;color:#7D8B88;margin-top:6px}.term-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:28px;padding-top:22px}.term-card{border-top:1px solid #53605E;padding-top:14px}.term-card h4{font-size:9px;text-transform:uppercase;letter-spacing:.13em;color:#7F8F8B;margin:0 0 14px}.term-causal-line{display:grid;grid-template-columns:28px 1fr auto;gap:12px;padding:12px 0;border-bottom:1px solid #2F3937;align-items:start}.term-causal-line .tno{font-size:8px;color:#62716D}.term-causal-line strong{font-size:11px;font-weight:560}.term-causal-line p{font-size:9px;line-height:1.5;color:#7D8D89;margin:4px 0 0}.term-causal-line .conf{font-size:8px;color:#9BA9A5}.term-side-big{font-family:Georgia,serif;font-size:30px;line-height:1.2;color:#CDD8D5;margin:0 0 28px}.term-side-big strong{font-family:Inter,sans-serif;color:#A5C1BD;font-weight:600}.term-chip{display:inline-block;border:1px solid #465451;padding:6px 8px;font-size:8px;text-transform:uppercase;letter-spacing:.1em;color:#8FA09B;margin:0 6px 6px 0}
+
+/* footer */
+footer{background:var(--ink);color:var(--paper);min-height:76vh;padding:120px 0 36px;position:relative;overflow:hidden}
+.footer-title{font-size:clamp(76px,12vw,196px);line-height:.72;letter-spacing:-.085em;font-weight:610;margin:0 0 72px;max-width:1300px}.footer-title em{display:block;font-family:Georgia,serif;font-weight:400;color:#A6BFBC;margin-left:10vw}.footer-grid{display:grid;grid-template-columns:1.1fr .9fr .9fr;gap:48px;border-top:1px solid #3A4745;padding-top:22px}.footer-grid h4{font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:#72817D;margin:0 0 12px}.footer-grid p{font-size:11px;line-height:1.65;color:#A8B4B1;margin:0;max-width:390px}.footer-bottom{position:absolute;bottom:28px;left:32px;right:32px;display:flex;justify-content:space-between;font-size:8px;text-transform:uppercase;letter-spacing:.14em;color:#667571}
+
+@media(max-width:1080px){
+ body{cursor:auto}.cursor-dot,.cursor-ring{display:none}button,a{cursor:pointer}
+ #intro{grid-template-columns:1fr}.intro-right{display:none}.intro-left{padding:30px 26px}.intro-title{font-size:84px}
+ .top-inner,.wrap{width:min(var(--max),calc(100% - 34px))}.top-inner{grid-template-columns:1fr auto}.top-meta{display:none}.side-nav{display:none}
+ .section-head{grid-template-columns:1fr}.section-no{padding-top:0}.section-note{max-width:650px}
+ .hero,.gap-grid,.causal-layout,.residual-grid,.policy-output,.hype-shell{grid-template-columns:1fr;gap:46px}.hype-network{border-right:0;border-bottom:1px solid var(--line-2);min-height:520px}.hype-panel{padding-left:0}.hero-field{height:48vh;min-height:430px;border-left:0}.hero-copy{grid-template-columns:1fr}.hero-title .trace{margin-left:7vw}
+ .gap-thesis{position:relative;top:auto}.trace-shell{grid-template-columns:230px 1fr}.dna-grid{grid-template-columns:1fr}.dna-chart{border-right:0;border-bottom:1px solid var(--line);padding:0 0 28px}.contagion-layout{grid-template-columns:1fr}.contagion-controls{min-height:320px}.policy-shell{grid-template-columns:260px 1fr}.policy-score{border-right:0;border-bottom:1px solid var(--line);padding:0 0 30px}.term-shell{grid-template-columns:230px 1fr}.term-grid{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr}
+}
+@media(max-width:720px){
+ section{padding-top:98px}.section-title{font-size:54px}.hero-title{font-size:78px}.hero-title .small{font-size:.54em}.layer{grid-template-columns:55px 1fr}.layer .state{display:none}.layer.missing{margin-left:-10px;margin-right:-10px}.layer.missing:hover{padding-left:28px}
+ .trace-shell{grid-template-columns:1fr}.event-rail{border-right:0;border-bottom:1px solid var(--line);padding-right:0;display:grid;grid-template-columns:1fr 1fr;gap:0 14px}.event-rail-top{grid-column:1/-1}.trace-main{padding-left:0}.trace-footer{grid-template-columns:1fr 1fr}.dna-row{grid-template-columns:105px 1fr 36px}.causal-stage{min-height:760px}.c-node{width:122px;height:122px}.counter-top{grid-template-columns:1fr}.twin-stage{grid-template-columns:1fr;min-height:930px}.twin-half:first-child{border-right:0;border-bottom:1px solid var(--line-2)}.twin-half{min-height:460px}.counter-control{grid-template-columns:1fr}.contagion-stage{height:540px}.policy-shell{grid-template-columns:1fr}.term-shell{grid-template-columns:1fr}.term-rail{border-right:0;border-bottom:1px solid #34403E}.footer-title{font-size:80px}
+}
+</style>
+</head>
+<body>
+<div class="cursor-dot"></div><div class="cursor-ring"></div>
+
+<div id="intro" aria-label="Pembuka FLOWSHIELD-ID">
+  <div class="intro-left">
+    <div class="intro-top"><span>FESTIN 2026 / CONCEPT PROTOTYPE</span><span>MARKET RESILIENCE LAYER</span></div>
+    <div>
+      <div class="intro-incident"><span>14:37 WIB</span><span>ILLUSTRATIVE INCIDENT</span></div>
+      <h1 class="intro-title">THE MARKET<em>MOVED.</em></h1>
+      <p class="intro-sub">Foreign selling menguat. Lima saham berkapitalisasi besar bergerak turun bersamaan. Tekanan rupiah muncul beberapa menit kemudian. Pasar tahu <i>apa</i> yang terjadi. Yang belum tentu diketahui adalah <i>mengapa</i>.</p>
+      <div class="intro-sequence"><span>01 / foreign flow accelerates</span><span>02 / liquidity thins</span><span>03 / narrative spreads</span><span>04 / cross-market pressure</span></div>
+    </div>
+    <div class="enter-row">
+      <button class="enter-btn interactive" id="enterBtn"><span class="enter-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 5h14v14M19 5 5 19"/></svg></span><span>Reconstruct event</span></button>
+      <div class="intro-note">Prototype konseptual. Seluruh angka simulasi ditandai sebagai ilustrasi, bukan data pasar aktual.</div>
+    </div>
+  </div>
+  <div class="intro-right"><div class="intro-index">14:37</div><canvas id="introField"></canvas><div class="intro-right-bottom"><span>Scroll to reconstruct</span><span>Demo / simulated data</span></div></div>
+</div>
+
+<header class="topbar">
+  <div class="top-inner"><div class="brand">FLOW<span>SHIELD-ID</span></div><div class="live-badge"><i class="live-dot"></i>prototype simulation</div><div class="top-meta"><button id="presentationBtn" class="presentation-btn interactive">Presentation mode</button></div></div>
+</header>
+<nav class="side-nav" aria-label="Navigasi bagian">
+  <a href="#home" class="on"></a><a href="#gap"></a><a href="#trace"></a><a href="#causal"></a><a href="#hypeprint"></a><a href="#counter"></a><a href="#residual"></a><a href="#contagion"></a><a href="#policy"></a><a href="#terminal"></a>
+</nav>
+
+<main>
+<section id="home">
+  <div class="wrap hero">
+    <div class="hero-left reveal">
+      <div class="hero-kicker">FLOWSHIELD-ID / TRACE ENGINE</div>
+      <h2 class="hero-title">MARKET<span class="trace">LEAVES</span><span class="small">traces.</span></h2>
+      <div class="hero-copy"><p>Satu candle merah bukan satu cerita.</p><p>Outflow bisa lahir dari berita, perubahan bobot indeks, likuiditas yang menipis, konsentrasi kepemilikan, hedging valas, atau beberapa hal yang terjadi dalam urutan yang sama sekali berbeda. Ketika semua dibaca sebagai “sentimen negatif”, respons bisa salah sasaran.</p></div>
+    </div>
+    <div class="hero-field reveal"><canvas id="marketField"></canvas><div class="field-top"><span>structural signal field</span><span>00:04:17</span></div><i class="hero-pulse"></i><div class="field-bottom"><span>MOVE CURSOR THROUGH THE FIELD</span><span>ANOMALY ≠ CAUSE</span></div></div>
+  </div>
+</section>
+
+<section id="gap">
+  <div class="wrap">
+    <div class="section-head reveal"><div class="section-no">01 / THE GAP</div><h2 class="section-title">Yang hilang bukan data. Yang hilang adalah <em>lapisan sebab.</em></h2><p class="section-note">Pasar sudah memiliki surveillance, indeks, data transaksi, risk analytics, dan berita. Tetapi potongan itu menjawab pertanyaan yang berbeda.</p></div>
+    <div class="gap-grid">
+      <div class="gap-thesis reveal"><blockquote>Masalah serius muncul ketika sistem tahu <strong>apa yang aneh</strong>, tetapi belum cukup cepat menjelaskan <strong>mengapa arus modal berubah.</strong></blockquote><p>FLOWSHIELD-ID memosisikan diri bukan sebagai pengganti surveillance atau indeks, melainkan lapisan kausal yang menghubungkan struktur pasar, event, flow, likuiditas, dan transmisi lintas-aset.</p></div>
+      <div class="layer-list reveal">
+        <div class="layer"><div class="id">A / Surveillance</div><div><h3>Apakah ada perilaku pasar yang tidak wajar?</h3><p>Fokus utama: integritas pasar, market abuse, order-book behavior, investigasi dan alert.</p></div><div class="state">Sudah kuat</div></div>
+        <div class="layer"><div class="id">B / Index</div><div><h3>Apakah pasar dan saham masih layak direplikasi investor global?</h3><p>Fokus utama: free float, foreign ownership, liquidity, accessibility, metodologi indeks.</p></div><div class="state">Sudah ada</div></div>
+        <div class="layer"><div class="id">C / Risk</div><div><h3>Berapa exposure dan risiko portofolio?</h3><p>Fokus utama: sensitivitas, skenario, posisi, volatilitas dan dampak finansial.</p></div><div class="state">Sudah matang</div></div>
+        <div class="layer missing"><div class="id">D / Missing layer</div><div><h3>Apa yang memulai outflow, apa yang memperbesar, dan apa yang hanya ikut terseret?</h3><p>Inilah celah yang dieksplorasi FLOWSHIELD-ID: causal attribution, counterfactual, hidden residual, dan spillover lintas-pasar dalam satu ruang operator.</p></div><div class="state">FLOWSHIELD-ID</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="trace">
+  <div class="wrap">
+    <div class="section-head reveal"><div class="section-no">02 / TRACE ENGINE</div><h2 class="section-title">Setiap kejadian punya <em>DNA pasar.</em></h2><p class="section-note">Klik sebuah event. Prototype akan membongkar komposisi driver, jalur kausal, bukti yang benar-benar terlihat, serta bagian yang masih inferensial.</p></div>
+    <div class="trace-shell reveal">
+      <aside class="event-rail">
+        <div class="event-rail-top"><span class="micro">Event ledger</span><span class="rail-filter">6 signals</span></div>
+        <button class="event-btn active interactive" data-event="index"><span class="e-no">01</span><strong>Index weight cut + liquidity squeeze</strong><small>structural</small></button>
+        <button class="event-btn interactive" data-event="policy"><span class="e-no">02</span><strong>Rumor / hype spike + fragile float</strong><small>narrative</small></button>
+        <button class="event-btn interactive" data-event="ownership"><span class="e-no">03</span><strong>Ownership concentration shift</strong><small>structure</small></button>
+        <button class="event-btn interactive" data-event="oil"><span class="e-no">04</span><strong>Oil / USD double shock</strong><small>cross-asset</small></button>
+        <button class="event-btn interactive" data-event="disclosure"><span class="e-no">05</span><strong>Issuer disclosure surprise</strong><small>idiosyncratic</small></button>
+        <button class="event-btn interactive" data-event="unknown"><span class="e-no">06</span><strong>Unexplained foreign selling</strong><small>unknown</small></button>
+      </aside>
+      <div class="trace-main">
+        <div class="trace-head"><h3 id="eventTitle">Index weight cut + liquidity squeeze</h3><div class="trace-confidence"><b id="eventConf">82%</b><span>attribution confidence</span></div></div>
+        <div class="dna-grid">
+          <div class="dna-chart"><div class="micro">Flow attribution / illustrative</div><div class="dna-bars" id="dnaBars"></div></div>
+          <div class="event-story"><p class="story-copy" id="eventStory">Pasar tidak jatuh karena satu kabar. Dalam skenario ini, <strong>mekanisme indeks memulai tekanan</strong>, likuiditas penutupan memperbesar dampak, lalu konversi valas membawa shock keluar dari pasar saham.</p><div class="evidence-legend"><div class="evidence-line"><i class="evidence-dot obs"></i><b>Observed</b><span>Terlihat langsung di data/transaksi.</span></div><div class="evidence-line"><i class="evidence-dot inf"></i><b>Inferred</b><span>Disimpulkan dari urutan dan hubungan variabel.</span></div><div class="evidence-line"><i class="evidence-dot sim"></i><b>Simulated</b><span>Dihasilkan dari stress test/counterfactual.</span></div></div></div>
+        </div>
+        <div class="trace-footer"><div class="trace-stat"><span>Primary trigger</span><b id="primaryTrigger">Index mechanics</b></div><div class="trace-stat"><span>Amplifier</span><b id="amplifier">Closing liquidity</b></div><div class="trace-stat"><span>Cross-market link</span><b id="crossLink">FX conversion</b></div><div class="trace-stat"><span>Residual</span><b id="residualVal">18%</b></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="causal">
+  <div class="wrap">
+    <div class="section-head reveal"><div class="section-no">03 / CAUSAL PATH</div><h2 class="section-title">Bukan kronologi. Ini <em>rantai tekanan.</em></h2><p class="section-note">Korelasi memberi tahu dua hal bergerak bersama. Operator tetap perlu membedakan trigger, amplifier, transmission, dan spillover.</p></div>
+    <div class="causal-layout reveal">
+      <div class="causal-stage" id="causalStage">
+        <svg viewBox="0 0 1000 620" preserveAspectRatio="none"><path class="c-edge" d="M170 170 C280 120 325 170 405 220"/><path class="c-edge" d="M405 220 C520 190 590 250 655 300"/><path class="c-edge" d="M655 300 C770 290 810 350 855 430"/><path class="c-edge" d="M405 220 C410 360 330 405 265 460"/><path class="c-edge" d="M265 460 C430 520 630 520 855 430"/></svg>
+        <button class="c-node interactive teal active" style="left:17%;top:27%" data-node="Free-float deterioration"><span><span class="n">Trigger / T−30</span><b>Free-float deterioration</b></span></button>
+        <button class="c-node interactive" style="left:41%;top:36%" data-node="Index weight adjustment"><span><span class="n">Mechanism / T−7</span><b>Index weight adjustment</b></span></button>
+        <button class="c-node interactive red" style="left:66%;top:48%" data-node="Passive selling"><span><span class="n">Flow / T0</span><b>Passive selling</b></span></button>
+        <button class="c-node interactive" style="left:27%;top:74%" data-node="Closing liquidity squeeze"><span><span class="n">Amplifier / T0</span><b>Closing liquidity squeeze</b></span></button>
+        <button class="c-node interactive red" style="left:86%;top:69%" data-node="FX transmission"><span><span class="n">Transmission / T+1</span><b>FX transmission</b></span></button>
+      </div>
+      <aside class="causal-panel"><div><div class="micro">Selected node</div><h3 id="causalName">Free-float deterioration</h3><p id="causalDesc">Perubahan struktur kepemilikan dapat mengurangi saham yang efektif tersedia bagi investor publik. Dalam prototype, perubahan ini diperlakukan sebagai sinyal struktural—bukan otomatis sebagai penyebab outflow.</p><p class="causal-insight">Yang berbahaya bukan satu node. <strong>Yang berbahaya adalah urutannya.</strong></p></div><div class="causal-meta"><div class="meta-row"><span>Evidence type</span><b id="cEvidence">Observed</b></div><div class="meta-row"><span>Role in chain</span><b id="cRole">Trigger candidate</b></div><div class="meta-row"><span>Confidence</span><b id="cConf">High</b></div></div></aside>
+    </div>
+  </div>
+</section>
+
+
+<section id="hypeprint">
+  <div class="wrap">
+    <div class="section-head reveal"><div class="section-no">04 / HYPEPRINT</div><h2 class="section-title">Ketika perhatian berubah menjadi <em>likuiditas.</em></h2><p class="section-note">Bukan sentiment score. HYPEPRINT mencari ketidakseimbangan antara narasi, fakta material, struktur free float, arus transaksi, dan siapa yang memperoleh ruang keluar ketika perhatian publik memuncak.</p></div>
+    <div class="hype-shell reveal">
+      <div class="hype-network"><canvas id="hypeCanvas"></canvas><div class="hype-caption"><span>SIMULATED NARRATIVE NETWORK</span><span id="hypeCaption">1 source → 428 replicated narrative nodes</span></div></div>
+      <aside class="hype-panel">
+        <div class="hype-score"><span>Narrative Pressure Index</span><b id="hypeScore">84</b><small>/100 · illustrative</small></div>
+        <div class="hype-metrics">
+          <button class="hype-metric active interactive" data-hm="attention"><span>01</span><div><b>Attention Velocity</b><small>mention growth vs baseline</small></div><strong>18.6×</strong></button>
+          <button class="hype-metric interactive" data-hm="gap"><span>02</span><div><b>Narrative–Fact Gap</b><small>attention vs verified disclosure</small></div><strong>81</strong></button>
+          <button class="hype-metric interactive" data-hm="copy"><span>03</span><div><b>Copyprint Similarity</b><small>phrase + timing repetition</small></div><strong>72%</strong></button>
+          <button class="hype-metric interactive" data-hm="float"><span>04</span><div><b>Float Fragility</b><small>low float × thin depth</small></div><strong>77</strong></button>
+          <button class="hype-metric interactive" data-hm="exit"><span>05</span><div><b>Exit Asymmetry</b><small>retail attention vs holder reduction</small></div><strong>86</strong></button>
+        </div>
+        <div class="hype-readout"><span class="micro">Operator read</span><p id="hypeReadout">Perhatian publik tumbuh jauh lebih cepat daripada informasi material yang dapat diverifikasi. Ini belum membuktikan manipulasi. Namun pada free float yang rapuh, narasi dapat menciptakan likuiditas yang memberi ruang distribusi kepada pemegang terkonsentrasi.</p><div class="review-tag">COORDINATION ANOMALY · REVIEW REQUIRED · NOT A MANIPULATION FINDING</div></div>
+      </aside>
+    </div>
+    <div class="trap-flow reveal">
+      <div class="trap-label">Narrative Liquidity Trap / mechanism</div>
+      <div class="trap-step"><span>01</span><b>HYPE</b><small>attention spikes</small></div><i>→</i><div class="trap-step"><span>02</span><b>RETAIL ATTENTION</b><small>buy-side interest</small></div><i>→</i><div class="trap-step"><span>03</span><b>LIQUIDITY EXPANDS</b><small>exit window opens</small></div><i>→</i><div class="trap-step hot"><span>04</span><b>DISTRIBUTION</b><small>holder reduction</small></div><i>→</i><div class="trap-step"><span>05</span><b>HYPE FADES</b><small>attention normalizes</small></div><i>→</i><div class="trap-step hot"><span>06</span><b>LIQUIDITY VANISHES</b><small>price shock</small></div>
+    </div>
+  </div>
+</section>
+
+<section id="counter">
+  <div class="wrap">
+    <div class="section-head reveal"><div class="section-no">05 / COUNTERFACTUAL TWIN</div><h2 class="section-title">Apa yang mungkin terjadi <em>tanpa pemicu itu?</em></h2><p class="section-note">Event analysis sering berhenti pada “setelah A, pasar turun”. Counterfactual memaksa sistem menguji apakah jalur tersebut tetap terjadi bila satu pemicu dilepas.</p></div>
+    <div class="counter-wrap reveal">
+      <div class="counter-top"><h3>Observed path vs. simulated no-index-shock path.</h3><p>Ini bukan klaim prediksi presisi. Prototype menampilkan cara membedakan kontribusi struktural dari noise menggunakan skenario yang transparan.</p></div>
+      <div class="twin-stage">
+        <div class="twin-half"><div class="twin-head"><span>Observed / scenario</span><span>T0 → T+5</span></div><div class="twin-canvas"><svg viewBox="0 0 600 280" preserveAspectRatio="none"><path d="M10 68 C85 70 110 93 150 92 C210 90 225 115 265 140 C315 176 360 194 405 210 C470 238 520 244 590 252" fill="none" stroke="#B94E3E" stroke-width="3"/><path d="M10 70 H590" stroke="#C7C8C2"/><path d="M150 35 V260" stroke="#A9AEAA" stroke-dasharray="4 6"/><text x="160" y="28" fill="#687271" font-size="10">INDEX EVENT</text></svg></div><div class="twin-big" id="observedScore">−31<small>pressure index / illustrative</small></div><div class="twin-note">Observed scenario menggabungkan index event, liquidity squeeze, dan FX transmission.</div></div>
+        <div class="twin-half"><div class="twin-head"><span>Counterfactual twin</span><span>remove one trigger</span></div><div class="twin-canvas"><svg viewBox="0 0 600 280" preserveAspectRatio="none"><path id="counterPath" d="M10 68 C85 70 110 73 150 76 C210 79 225 87 265 96 C315 108 360 118 405 126 C470 136 520 140 590 144" fill="none" stroke="#173E43" stroke-width="3"/><path d="M10 70 H590" stroke="#C7C8C2"/><path d="M150 35 V260" stroke="#A9AEAA" stroke-dasharray="4 6"/><text x="160" y="28" fill="#687271" font-size="10">TRIGGER REMOVED</text></svg></div><div class="twin-big" id="counterScore">−14<small>pressure index / illustrative</small></div><div class="twin-note" id="counterNote">Jika index shock dilepas, tekanan masih ada—tetapi jalurnya lebih dangkal. Sisanya berasal dari liquidity dan macro background.</div></div>
+      </div>
+      <div class="counter-control"><label for="removeStrength">Strength of removed trigger</label><input id="removeStrength" type="range" min="0" max="100" value="62"><output id="removeOutput">62% removed</output></div>
+    </div>
+  </div>
+</section>
+
+<section id="residual">
+  <div class="wrap">
+    <div class="section-head reveal"><div class="section-no">05 / UNKNOWN RESIDUAL</div><h2 class="section-title">Sistem yang matang juga berani berkata: <em>“belum tahu.”</em></h2><p class="section-note">Celah terbesar dalam dashboard risiko sering bukan salah angka—melainkan keyakinan berlebih terhadap cerita yang belum cukup bukti.</p></div>
+    <div class="residual-grid reveal">
+      <div class="residual-ring"><div class="residual-orbit"><i></i></div><div class="residual-core"><b>18</b><span>% unexplained pressure / demo</span></div></div>
+      <div class="residual-copy"><h3>Unexplained Pressure <em>Residual.</em></h3><p>FLOWSHIELD-ID sengaja menyisakan bagian yang tidak dapat dijelaskan oleh driver yang tersedia. Residual yang terus membesar bukan otomatis “sentimen”; ia menjadi sinyal bahwa ada data yang hilang, struktur yang belum dimodelkan, atau mekanisme pasar baru yang sedang muncul.</p><div class="residual-list"><div class="residual-row"><b>01</b><div><strong>Mencegah narasi palsu</strong><p>Sistem tidak memaksa semua pergerakan masuk ke kategori yang sudah ada.</p></div></div><div class="residual-row"><b>02</b><div><strong>Menjadi alarm untuk data gap</strong><p>Residual besar dan persisten memicu investigasi, bukan kesimpulan otomatis.</p></div></div><div class="residual-row"><b>03</b><div><strong>Mendeteksi perubahan rezim</strong><p>Pola “tidak terjelaskan” yang berulang dapat menandakan struktur pasar telah berubah.</p></div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="contagion">
+  <div class="wrap">
+    <div class="section-head reveal"><div class="section-no">07 / SECOND-ORDER MAP</div><h2 class="section-title">Shock jarang berhenti di saham yang <em>pertama bergerak.</em></h2><p class="section-note">Klik jenis shock. Peta menunjukkan contoh bagaimana tekanan dapat berpindah melalui common ownership, indeks, likuiditas sektor, dan transmisi valas.</p></div>
+    <div class="contagion-layout reveal">
+      <div class="contagion-stage"><canvas id="contagionCanvas"></canvas><div class="contagion-caption">Click the scenario / ripple = propagation depth</div></div>
+      <aside class="contagion-controls"><div class="micro" style="margin-bottom:16px">Shock source</div><div class="shock-buttons"><button class="shock-btn active interactive" data-shock="index"><span>Index rebalance</span><span>3 layers</span></button><button class="shock-btn interactive" data-shock="fx"><span>FX shock</span><span>4 layers</span></button><button class="shock-btn interactive" data-shock="liquidity"><span>Liquidity squeeze</span><span>3 layers</span></button><button class="shock-btn interactive" data-shock="ownership"><span>Ownership concentration</span><span>2 layers</span></button></div><div class="shock-insight"><p id="shockInsight">Satu perubahan bobot dapat menjadi <strong>flow event</strong>, lalu berubah menjadi liquidity event sebelum akhirnya terlihat seperti market-wide sentiment.</p></div></aside>
+    </div>
+  </div>
+</section>
+
+<section id="policy">
+  <div class="wrap">
+    <div class="section-head reveal"><div class="section-no">08 / POLICY ROOM</div><h2 class="section-title">Intervensi yang baik tidak hanya menurunkan risiko. Ia juga membaca <em>efek samping.</em></h2><p class="section-note">Pilih satu policy lever. Prototype mengubah risk score dan menampilkan trade-off agar rekomendasi tidak terasa seperti daftar solusi generik.</p></div>
+    <div class="policy-shell reveal">
+      <aside class="policy-controls"><h3>Policy levers</h3><p>Semua output di bawah bersifat ilustratif untuk menunjukkan logika produk.</p><button class="lever-btn active interactive" data-lever="float"><span>01</span><strong>Improve effective free float</strong><small>structure</small></button><button class="lever-btn interactive" data-lever="disclosure"><span>02</span><strong>Enhanced ownership disclosure</strong><small>data</small></button><button class="lever-btn interactive" data-lever="auction"><span>03</span><strong>Closing liquidity protocol</strong><small>market</small></button><button class="lever-btn interactive" data-lever="fx"><span>04</span><strong>Cross-market FX readiness</strong><small>macro</small></button></aside>
+      <div class="policy-output"><div class="policy-score"><div class="micro">Residual systemic pressure</div><div class="policy-number" id="policyNumber">54<sup>↓ 14</sup></div><div class="policy-word" id="policyWord">Reduced.</div><div class="policy-rows"><div class="policy-row"><span>Indexability risk</span><b id="pIndex">−22%</b></div><div class="policy-row"><span>Liquidity pressure</span><b id="pLiquidity">−8%</b></div><div class="policy-row"><span>FX transmission</span><b id="pFx">−4%</b></div><div class="policy-row"><span>Data uncertainty</span><b id="pData">−2%</b></div></div></div><aside class="tradeoffs"><h4>Trade-offs / operator view</h4><div id="tradeoffs"></div><div class="prototype-warning">Catatan: prototype tidak menyarankan kebijakan otomatis. Policy layer adalah decision-support; otoritas tetap menilai legalitas, timing, biaya, dan risiko pergeseran masalah.</div></aside></div>
+    </div>
+  </div>
+</section>
+
+<section id="terminal">
+  <div class="wrap">
+    <div class="section-head reveal"><div class="section-no">09 / OPERATOR VIEW</div><h2 class="section-title">Bukan feed berita. Ini ruang untuk <em>membedah kejadian.</em></h2><p class="section-note">Jika prototype dikembangkan, terminal ini menjadi titik temu data BEI/KSEI, informasi indeks, market flow, FX, event calendar, dan evidence trail.</p></div>
+    <div class="term-shell reveal"><aside class="term-rail"><div class="term-search">Search event, market, issuer…</div><div class="term-event"><div class="term-event-top"><span>09:47</span><span>structural</span></div><strong>Indexability stress cluster</strong><p>Three signals overlap before rebalance window.</p></div><div class="term-event"><div class="term-event-top"><span>10:12</span><span>cross-asset</span></div><strong>FX pressure divergence</strong><p>Equity flow weakens while bond flow remains stable.</p></div><div class="term-event"><div class="term-event-top"><span>11:03</span><span>unknown</span></div><strong>Residual rising</strong><p>Observed selling exceeds explained drivers.</p></div><div class="term-event"><div class="term-event-top"><span>13:21</span><span>liquidity</span></div><strong>Closing depth compression</strong><p>Potential amplifier detected into event window.</p></div></aside><div class="term-main"><div class="term-top"><div class="term-title"><h3>Event 01 / Indexability stress cluster</h3><p>Illustrative operator case — not live market data</p></div><div class="term-score"><b>82%</b><span>attribution confidence</span></div></div><div class="term-grid"><div class="term-card"><h4>Causal trace</h4><div class="term-causal-line"><span class="tno">01</span><div><strong>Free-float deterioration</strong><p>Structural signal appears before review window.</p></div><span class="conf">OBS / 91%</span></div><div class="term-causal-line"><span class="tno">02</span><div><strong>Index weight adjustment</strong><p>Mechanism translates structure into benchmark exposure.</p></div><span class="conf">OBS / 88%</span></div><div class="term-causal-line"><span class="tno">03</span><div><strong>Passive sell requirement</strong><p>Estimated from benchmark tracking behavior.</p></div><span class="conf">INF / 78%</span></div><div class="term-causal-line"><span class="tno">04</span><div><strong>Closing liquidity squeeze</strong><p>Market depth may amplify execution impact.</p></div><span class="conf">INF / 72%</span></div><div class="term-causal-line"><span class="tno">05</span><div><strong>FX transmission</strong><p>Cross-market pressure evaluated as potential channel.</p></div><span class="conf">SIM / 61%</span></div></div><aside class="term-card"><h4>Operator synthesis</h4><p class="term-side-big">“Jangan perlakukan seluruh foreign selling sebagai satu jenis <strong>sentimen.</strong> Pisahkan mechanical flow dari discretionary exit.”</p><span class="term-chip">trigger</span><span class="term-chip">amplifier</span><span class="term-chip">spillover</span><span class="term-chip">counterfactual</span><span class="term-chip">residual</span></aside></div></div></div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap"><h2 class="footer-title reveal">DON’T JUST WATCH<em>THE MARKET MOVE.</em></h2><div class="footer-grid reveal"><div><h4>FLOWSHIELD-ID</h4><p>Market forensics layer yang merekonstruksi fundamental, mechanical flow, macro/foreign shock, narrative pressure, market-structure anomaly, dan unknown residual dalam satu evidence trail.</p></div><div><h4>Core proposition</h4><p>Detect → Attribute → Reconstruct → Hypeprint → Counterfact → Map Spillover → Expose Residual → Human Review.</p></div><div><h4>Prototype status</h4><p>Concept demo for competition. Angka, event, skor, serta stress output bersifat ilustratif sampai divalidasi dengan data dan metodologi empiris.</p></div></div></div><div class="footer-bottom"><span>FESTIN 2026 / NATIONAL ESSAY COMPETITION</span><span>CONCEPT V3.0 — MARKET FORENSICS / HYPEPRINT</span></div>
+</footer>
+
+<script>
+const $=(q,s=document)=>s.querySelector(q), $$=(q,s=document)=>[...s.querySelectorAll(q)];
+
+// enter
+$('#enterBtn').addEventListener('click',()=>$('#home').scrollIntoView({behavior:'smooth'}));
+
+// cursor
+const dot=$('.cursor-dot'), ring=$('.cursor-ring'); let mx=innerWidth/2,my=innerHeight/2,rx=mx,ry=my;
+window.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px'});
+function cursorLoop(){rx+=(mx-rx)*.14;ry+=(my-ry)*.14;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(cursorLoop)}cursorLoop();
+$$('.interactive,button,a,input').forEach(el=>{el.addEventListener('mouseenter',()=>document.body.classList.add('is-hover'));el.addEventListener('mouseleave',()=>document.body.classList.remove('is-hover'))});
+
+// reveal
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.12});$$('.reveal').forEach(x=>io.observe(x));
+const sections=$$('main section');const nav=$$('.side-nav a');const sio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){let i=sections.indexOf(e.target);nav.forEach(a=>a.classList.remove('on'));if(nav[i])nav[i].classList.add('on')}}),{threshold:.48});sections.forEach(s=>sio.observe(s));
+
+// market field canvas
+const field=$('#marketField'), fctx=field.getContext('2d');let pts=[], fw=0,fh=0,fmouse={x:-999,y:-999};
+function resizeField(){let r=field.getBoundingClientRect();fw=field.width=Math.floor(r.width*devicePixelRatio);fh=field.height=Math.floor(r.height*devicePixelRatio);fctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);pts=[];let w=r.width,h=r.height;for(let y=45;y<h;y+=42)for(let x=35;x<w;x+=42)pts.push({x:x+(Math.random()-.5)*8,y:y+(Math.random()-.5)*8,baseX:x,baseY:y,amp:Math.random()});}
+field.parentElement.addEventListener('mousemove',e=>{let r=field.getBoundingClientRect();fmouse={x:e.clientX-r.left,y:e.clientY-r.top}});field.parentElement.addEventListener('mouseleave',()=>fmouse={x:-999,y:-999});
+function drawField(t){let r=field.getBoundingClientRect(),w=r.width,h=r.height;fctx.clearRect(0,0,w,h);let cx=w*.63+Math.sin(t*.00045)*18,cy=h*.45+Math.cos(t*.00055)*22;
+ pts.forEach((p,i)=>{let dx=p.baseX-fmouse.x,dy=p.baseY-fmouse.y,d=Math.hypot(dx,dy);let push=Math.max(0,95-d)/95;let ddx=p.baseX-cx,ddy=p.baseY-cy,ad=Math.hypot(ddx,ddy);let anomaly=Math.max(0,150-ad)/150;p.x=p.baseX+(dx/(d||1))*push*15+Math.sin(t*.001+i)*p.amp*2;p.y=p.baseY+(dy/(d||1))*push*15+Math.cos(t*.0012+i)*p.amp*2;let size=1.1+anomaly*2.8;fctx.beginPath();fctx.arc(p.x,p.y,size,0,Math.PI*2);fctx.fillStyle=anomaly>.55?'#B94E3E':anomaly>.18?'#6B7B78':'#9EA5A1';fctx.globalAlpha=.28+anomaly*.65;fctx.fill();});fctx.globalAlpha=1;requestAnimationFrame(drawField)}
+resizeField();requestAnimationFrame(drawField);addEventListener('resize',resizeField);
+
+
+// intro signal field
+const ifc=$('#introField'), ifx=ifc.getContext('2d');let iw=0,ih=0,ip=[];function resizeIntro(){let r=ifc.getBoundingClientRect();ifc.width=r.width*devicePixelRatio;ifc.height=r.height*devicePixelRatio;ifx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);iw=r.width;ih=r.height;ip=Array.from({length:70},(_,i)=>({x:Math.random()*iw,y:Math.random()*ih,r:Math.random()*1.6+.5,v:Math.random()*.22+.04,p:Math.random()*6.2}))}function drawIntro(t){ifx.clearRect(0,0,iw,ih);for(let i=0;i<ip.length;i++){let p=ip[i];p.y-=p.v;if(p.y<0)p.y=ih;let a=.15+.22*(.5+.5*Math.sin(t*.001+p.p));ifx.beginPath();ifx.arc(p.x,p.y,p.r,0,Math.PI*2);ifx.fillStyle=`rgba(168,192,189,${a})`;ifx.fill();if(i%7===0){ifx.strokeStyle='rgba(126,141,137,.08)';ifx.beginPath();ifx.moveTo(p.x,p.y);ifx.lineTo(iw*.52,ih*.48);ifx.stroke()}}requestAnimationFrame(drawIntro)}resizeIntro();addEventListener('resize',resizeIntro);requestAnimationFrame(drawIntro);
+
+// HYPEPRINT network
+const hc=$('#hypeCanvas'),hctx=hc.getContext('2d');let hw=0,hh=0,hNodes=[];function buildHype(){let r=hc.getBoundingClientRect();hc.width=r.width*devicePixelRatio;hc.height=r.height*devicePixelRatio;hctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);hw=r.width;hh=r.height;let cx=hw*.26,cy=hh*.48;hNodes=[{x:cx,y:cy,root:1}];for(let i=1;i<125;i++){let branch=i%8, ang=(branch/8)*Math.PI*2+(Math.random()-.5)*.28, dist=80+Math.random()*Math.max(120,hw*.55);hNodes.push({x:cx+Math.cos(ang)*dist,y:cy+Math.sin(ang)*dist*.58,root:0,p:Math.random()*6.28})}}function drawHype(t){hctx.clearRect(0,0,hw,hh);let root=hNodes[0];hNodes.slice(1).forEach((n,i)=>{let pulse=.5+.5*Math.sin(t*.002+n.p);hctx.strokeStyle=`rgba(92,108,104,${.055+.05*pulse})`;hctx.beginPath();hctx.moveTo(root.x,root.y);hctx.lineTo(n.x,n.y);hctx.stroke();hctx.beginPath();hctx.arc(n.x,n.y,1.4+(i%9===0?1.5:0),0,Math.PI*2);hctx.fillStyle=i%11===0?'rgba(185,78,62,.62)':'rgba(23,62,67,.42)';hctx.fill()});hctx.beginPath();hctx.arc(root.x,root.y,13+Math.sin(t*.003)*2,0,Math.PI*2);hctx.fillStyle='#B94E3E';hctx.fill();hctx.beginPath();hctx.arc(root.x,root.y,35+Math.sin(t*.002)*4,0,Math.PI*2);hctx.strokeStyle='rgba(185,78,62,.2)';hctx.stroke();requestAnimationFrame(drawHype)}buildHype();addEventListener('resize',buildHype);requestAnimationFrame(drawHype);
+const hypeReads={attention:'Mention velocity melonjak jauh di atas baseline sebelum price-volume shock. Sistem memperlakukan kecepatan perhatian sebagai sinyal awal, bukan bukti sebab.',gap:'Narasi tumbuh tetapi tidak ditemukan peningkatan informasi material yang sebanding. Gap ini menaikkan kebutuhan verifikasi, bukan menghasilkan vonis.',copy:'Frasa yang sangat mirip muncul dalam jendela waktu sempit. Replikasi narasi dapat membuat ribuan posting tampak seperti ribuan opini independen.',float:'Hype menjadi lebih rapuh ketika free float efektif kecil dan depth tipis. Struktur pasar menentukan seberapa mudah perhatian berubah menjadi price impact.',exit:'Perhatian ritel meningkat pada saat pemegang terkonsentrasi mengurangi exposure. Pola ini diberi label exit asymmetry dan wajib ditinjau, bukan otomatis disebut manipulasi.'};$$('.hype-metric').forEach(b=>b.addEventListener('click',()=>{$$('.hype-metric').forEach(x=>x.classList.remove('active'));b.classList.add('active');$('#hypeReadout').textContent=hypeReads[b.dataset.hm]}));
+
+// jury presentation mode
+const pres=['intro','trace','hypeprint','counter','policy'];let pi=-1;$('#presentationBtn').addEventListener('click',()=>{pi=(pi+1)%pres.length;document.getElementById(pres[pi]).scrollIntoView({behavior:'smooth',block:'start'});$('#presentationBtn').textContent=`Presentation ${pi+1}/5`});
+
+// TRACE data
+const events={
+ index:{title:'Index weight cut + liquidity squeeze',conf:82,drivers:[['Index mechanics',41],['Liquidity',24],['FX / hedge',14],['Sentiment',12],['Fundamentals',6],['Unknown residual',3]],story:'Pasar tidak jatuh karena satu kabar. Dalam skenario ini, <strong>mekanisme indeks memulai tekanan</strong>, likuiditas penutupan memperbesar dampak, lalu konversi valas membawa shock keluar dari pasar saham.',primary:'Index mechanics',amp:'Closing liquidity',cross:'FX conversion',res:'18%'},
+ policy:{title:'Rumor / hype spike + fragile float',conf:71,drivers:[['Narrative / hype',34],['Float fragility',21],['Exit asymmetry',17],['Liquidity',11],['Fundamental support',7],['Unknown residual',10]],story:'Perhatian publik tidak selalu sama dengan informasi. Dalam skenario ini, <strong>narasi tumbuh lebih cepat daripada fakta material</strong> pada saham dengan float rapuh; likuiditas yang tercipta dapat memberi ruang distribusi sebelum perhatian mereda.',primary:'Narrative velocity',amp:'Float fragility',cross:'Retail liquidity',res:'29%'},
+ ownership:{title:'Ownership concentration shift',conf:71,drivers:[['Ownership structure',35],['Indexability',27],['Liquidity',15],['Foreign exposure',10],['Sentiment',5],['Unknown residual',8]],story:'Perubahan kepemilikan terlihat seperti data administratif sampai ia mengubah saham yang benar-benar tersedia di pasar. <strong>Struktur menjadi flow risk</strong> ketika bertemu aturan investability.',primary:'Ownership shift',amp:'Indexability',cross:'Passive flow',res:'29%'},
+ oil:{title:'Oil / USD double shock',conf:74,drivers:[['Commodity shock',31],['FX repricing',27],['Sector exposure',19],['Foreign flow',10],['Liquidity',7],['Unknown residual',6]],story:'Shock komoditas dan dolar dapat menekan emiten melalui biaya, kurs, dan positioning sekaligus. <strong>Satu shock makro punya jalur mikro yang berbeda di tiap sektor.</strong>',primary:'Oil + USD',amp:'Sector exposure',cross:'FX / margin',res:'26%'},
+ disclosure:{title:'Issuer disclosure surprise',conf:86,drivers:[['Fundamental news',47],['Liquidity',18],['Sentiment',15],['Foreign positioning',10],['Index linkage',4],['Unknown residual',6]],story:'Di sini fundamental memang dominan. Tetapi sistem tetap memisahkan <strong>reaksi rasional terhadap informasi</strong> dari tekanan mekanis yang ikut memperbesar pergerakan.',primary:'Disclosure',amp:'Liquidity',cross:'Peer repricing',res:'14%'},
+ unknown:{title:'Unexplained foreign selling',conf:43,drivers:[['Known macro',18],['Liquidity',15],['Index mechanics',9],['Ownership',7],['Sentiment',6],['Unknown residual',45]],story:'Ini justru kasus yang paling penting. Ketika driver yang dikenal hanya menjelaskan sebagian kecil pergerakan, <strong>sistem tidak memaksakan cerita</strong>. Residual menjadi objek investigasi.',primary:'Undetermined',amp:'Unknown',cross:'Under review',res:'57%'}
+};
+function renderEvent(key){let e=events[key];$('#eventTitle').textContent=e.title;$('#eventConf').textContent=e.conf+'%';$('#eventStory').innerHTML=e.story;$('#primaryTrigger').textContent=e.primary;$('#amplifier').textContent=e.amp;$('#crossLink').textContent=e.cross;$('#residualVal').textContent=e.res;let box=$('#dnaBars');box.innerHTML='';e.drivers.forEach(([name,val])=>{let row=document.createElement('div');row.className='dna-row';row.innerHTML=`<div class="dna-label">${name}</div><div class="dna-track"><div class="dna-fill" style="width:0"></div></div><div class="dna-value">${val}%</div>`;box.appendChild(row);requestAnimationFrame(()=>row.querySelector('.dna-fill').style.width=val+'%')})}
+renderEvent('index');$$('.event-btn').forEach(b=>b.addEventListener('click',()=>{$$('.event-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderEvent(b.dataset.event)}));
+
+// causal node data
+const causal={
+ 'Free-float deterioration':{d:'Perubahan struktur kepemilikan dapat mengurangi saham yang efektif tersedia bagi investor publik. Dalam prototype, perubahan ini diperlakukan sebagai sinyal struktural—bukan otomatis sebagai penyebab outflow.',e:'Observed',r:'Trigger candidate',c:'High'},
+ 'Index weight adjustment':{d:'Perubahan bobot indeks menerjemahkan kondisi investability menjadi kebutuhan exposure benchmark. Di sinilah shock struktural dapat berubah menjadi mekanisme portfolio.',e:'Observed / rule-based',r:'Transmission mechanism',c:'High'},
+ 'Passive selling':{d:'Dana yang mereplikasi benchmark dapat perlu menyesuaikan posisi. Besarnya flow tidak diasumsikan pasti; sistem memperlakukannya sebagai estimasi berbasis exposure dan tracking behavior.',e:'Inferred',r:'Flow channel',c:'Medium–High'},
+ 'Closing liquidity squeeze':{d:'Order yang terkonsentrasi pada jendela penutupan dapat bertemu depth yang terbatas. Ini bukan trigger awal, tetapi dapat memperbesar market impact dari flow yang sudah terbentuk.',e:'Observed + inferred',r:'Amplifier',c:'Medium–High'},
+ 'FX transmission':{d:'Foreign selling dapat berinteraksi dengan kebutuhan konversi mata uang dan hedging. Prototype memperlakukan jalur ini sebagai cross-market scenario, bukan hubungan satu-banding-satu.',e:'Simulated',r:'Cross-market transmission',c:'Medium'}
+};
+$$('.c-node').forEach(n=>n.addEventListener('click',()=>{$$('.c-node').forEach(x=>x.classList.remove('active'));n.classList.add('active');let d=causal[n.dataset.node];$('#causalName').textContent=n.dataset.node;$('#causalDesc').textContent=d.d;$('#cEvidence').textContent=d.e;$('#cRole').textContent=d.r;$('#cConf').textContent=d.c}));
+
+// counterfactual
+const rs=$('#removeStrength');function updateCounter(){let v=+rs.value;$('#removeOutput').textContent=v+'% removed';let score=Math.round(-31+(v*.27));$('#counterScore').innerHTML=score+'<small>pressure index / illustrative</small>';let y=252-v*1.7;let mid=200-v*.95;$('#counterPath').setAttribute('d',`M10 68 C85 70 110 73 150 ${82-v*.08} C210 ${96-v*.13} 225 ${120-v*.2} 265 ${145-v*.35} C315 ${175-v*.55} 360 ${205-v*.7} 405 ${220-v*.8} C470 ${235-v*.95} 520 ${245-v*1.15} 590 ${Math.max(80,y)}`);$('#counterNote').textContent=v<30?'Sebagian besar trigger masih aktif; jalur counterfactual mendekati observed path.':v<70?'Mengurangi trigger memperdangkal tekanan, tetapi liquidity dan macro background masih menyisakan shock.':'Pada removal tinggi, sebagian besar tekanan mekanis hilang. Sisa pergerakan terutama berasal dari driver lain dan residual.'}
+rs.addEventListener('input',updateCounter);updateCounter();
+
+// contagion network
+const cc=$('#contagionCanvas'), cctx=cc.getContext('2d');let cw,ch,nodes=[],shock='index',ripples=[];
+const layouts={index:[['IDX EVENT',.17,.45,0],['BANKS',.42,.24,1],['TECH',.43,.64,1],['FOREIGN FLOW',.64,.38,2],['LIQUIDITY',.65,.72,2],['FX',.84,.47,3],['SBN',.85,.75,3]],fx:[['USD/IDR',.16,.46,0],['FOREIGN FLOW',.40,.28,1],['IMPORTERS',.40,.67,1],['BANKS',.61,.19,2],['EQUITY',.63,.48,2],['SBN',.62,.76,2],['LIQUIDITY',.84,.35,3],['RISK PREMIUM',.84,.68,4]],liquidity:[['DEPTH SHOCK',.17,.48,0],['CLOSE AUCTION',.41,.27,1],['MID CAPS',.42,.66,1],['PRICE IMPACT',.65,.42,2],['FOREIGN FLOW',.64,.73,2],['FX',.84,.56,3]],ownership:[['HSC',.19,.49,0],['FREE FLOAT',.43,.30,1],['INDEXABILITY',.43,.67,1],['INDEX WEIGHT',.67,.47,2],['PASSIVE FLOW',.84,.62,2]]};
+function resizeCont(){let r=cc.getBoundingClientRect();cc.width=Math.floor(r.width*devicePixelRatio);cc.height=Math.floor(r.height*devicePixelRatio);cctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);cw=r.width;ch=r.height;buildNet()}function buildNet(){nodes=layouts[shock].map((n,i)=>({name:n[0],x:n[1]*cw,y:n[2]*ch,layer:n[3],phase:Math.random()*6}));ripples=[{r:10,a:1}]}
+function drawNet(t){cctx.clearRect(0,0,cw,ch);nodes.forEach((n,i)=>{if(i>0){let prev=nodes[Math.max(0,i-1)];if(n.layer>prev.layer){cctx.beginPath();cctx.moveTo(prev.x,prev.y);cctx.lineTo(n.x,n.y);cctx.strokeStyle='rgba(92,108,104,.28)';cctx.stroke()}}});
+ nodes.forEach(n=>{let pulse=Math.sin(t*.002+n.phase)*1.8;cctx.beginPath();cctx.arc(n.x,n.y,9+n.layer*2+pulse,0,Math.PI*2);cctx.fillStyle=n.layer===0?'#B94E3E':n.layer===1?'#173E43':n.layer===2?'#7F8D8B':'#B9A36B';cctx.fill();cctx.fillStyle='#344240';cctx.font='10px Inter, sans-serif';cctx.textAlign='center';cctx.fillText(n.name,n.x,n.y+26+n.layer*2)});
+ ripples.forEach((r,i)=>{r.r+=.7;r.a-=.0026;if(nodes[0]){cctx.beginPath();cctx.arc(nodes[0].x,nodes[0].y,r.r,0,Math.PI*2);cctx.strokeStyle=`rgba(185,78,62,${Math.max(0,r.a)*.18})`;cctx.stroke()}});if(ripples[0]?.a<=0)ripples=[{r:10,a:1}];requestAnimationFrame(drawNet)}resizeCont();requestAnimationFrame(drawNet);addEventListener('resize',resizeCont);
+const insights={index:'Satu perubahan bobot dapat menjadi <strong>flow event</strong>, lalu berubah menjadi liquidity event sebelum akhirnya terlihat seperti market-wide sentiment.',fx:'Shock valas dapat bergerak dua arah: dari capital flow ke FX, atau dari FX repricing kembali ke equity. <strong>Arah kausal tidak boleh diasumsikan.</strong>',liquidity:'Likuiditas tipis tidak selalu memulai shock. Namun ketika flow besar datang, ia dapat menjadi <strong>amplifier yang menentukan besarnya price impact.</strong>',ownership:'Konsentrasi kepemilikan tampak statis sampai ia mengubah free float, investability, lalu kebutuhan benchmark. <strong>Data struktur dapat menjadi data flow.</strong>'};
+$$('.shock-btn').forEach(b=>b.addEventListener('click',()=>{$$('.shock-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');shock=b.dataset.shock;buildNet();$('#shockInsight').innerHTML=insights[shock]}));
+
+// policy sandbox
+const policies={float:{num:54,down:14,word:'Reduced.',idx:'−22%',liq:'−8%',fx:'−4%',data:'−2%',tr:[['Benefit','Meningkatkan saham efektif yang dapat diperdagangkan dan memperbaiki investability.'],['Trade-off','Memerlukan kesiapan emiten dan tidak otomatis memperbaiki likuiditas bila demand tetap tipis.'],['Watch','Perubahan struktur harus dilihat bersama ownership concentration dan market depth.']]},disclosure:{num:59,down:9,word:'Clearer.',idx:'−8%',liq:'−3%',fx:'−1%',data:'−24%',tr:[['Benefit','Mengurangi ketidakpastian struktur kepemilikan dan memperkuat kualitas attribution.'],['Trade-off','Transparansi lebih baik tidak selalu menghilangkan risiko market impact.'],['Watch','Disclosure harus tepat waktu dan cukup granular untuk benar-benar berguna.']]},auction:{num:51,down:17,word:'Absorbed.',idx:'−5%',liq:'−31%',fx:'−6%',data:'−1%',tr:[['Benefit','Meningkatkan kemampuan pasar menyerap order terkonsentrasi di event window.'],['Trade-off','Desain auction yang buruk dapat memindahkan volatilitas, bukan menghapusnya.'],['Watch','Perlu uji terhadap volume, price discovery, dan potensi gaming.']]},fx:{num:57,down:11,word:'Buffered.',idx:'−2%',liq:'−4%',fx:'−27%',data:'0%',tr:[['Benefit','Mengurangi risiko shock equity berubah menjadi tekanan FX yang lebih besar.'],['Trade-off','Tidak menyelesaikan penyebab struktural di pasar saham.'],['Watch','Digunakan sebagai buffer lintas-pasar, bukan pengganti reformasi investability.']]}};
+function renderPolicy(k){let p=policies[k];$('#policyNumber').innerHTML=`${p.num}<sup>↓ ${p.down}</sup>`;$('#policyWord').textContent=p.word;$('#pIndex').textContent=p.idx;$('#pLiquidity').textContent=p.liq;$('#pFx').textContent=p.fx;$('#pData').textContent=p.data;$('#tradeoffs').innerHTML=p.tr.map(x=>`<div class="tradeoff"><strong>${x[0]}</strong><p>${x[1]}</p></div>`).join('')}
+renderPolicy('float');$$('.lever-btn').forEach(b=>b.addEventListener('click',()=>{$$('.lever-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderPolicy(b.dataset.lever)}));
+</script>
+</body>
+</html>
